@@ -71,9 +71,11 @@ def encode_enc(newimg, data):
 def encodeGuiMethod(imageNameToEncode, textToEnconde, outPutImageName):
     copyImage = PIL.Image.open(imageNameToEncode, 'r').copy()
     encode_enc(copyImage, textToEnconde)
-    finalName = "out-"+outPutImageName+".png"
-    path = "C:/Users/benja/Desktop/"
-    copyImage.save(path+finalName, str(finalName.split(".")[1].upper()))
+    finalName = outPutImageName+"-out.png"
+    path1 = "C:/Users/benja/Desktop/DataSecurityProject/DataSecurityMiniProject/venv/decryptedImages"
+    path2 = "C:/Users/benja/Desktop/DataSecurityProject/DataSecurityMiniProject/venv"
+    copyImage.save(path1+finalName, str(finalName.split(".")[1].upper()))
+    copyImage.save(path2+finalName, str(finalName.split(".")[1].upper()))
 
 
 # still need fixings

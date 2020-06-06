@@ -8,7 +8,7 @@ from aes import *
 def mainGUI():
     normalImages, encImages = 4, 0
     enc={}
-    enc2={}
+    dec={}
     window = Tk()
     window.title("CryptoPal")
     window.resizable(False, False)
@@ -39,7 +39,7 @@ def mainGUI():
 
         Button(paneSave, width=15, text="Encode",
                               command=lambda: encodeGuiMethod(imageNameToEncode,encrypt(
-                                                              dataText.get(), 123),
+                                                              dataText.get(), 'abcd'),
                                                               nameText.get())).pack(side=LEFT, fill=X, padx=5)
         # Button(paneSave, width=15, text="Encode",
         #                       command=lambda: encodeGuiMethod(imageNameToEncode,
@@ -53,6 +53,7 @@ def mainGUI():
     paneData = Frame(window)
     paneSave = Frame(window)
     paneDecrypt = Frame(window)
+    paneDecImages = Frame(window)
 
     logo = PhotoImage(file=r"logo-removebg-preview.png", width=187, height=60)
     Label(paneLogo, image=logo).pack()
@@ -69,19 +70,28 @@ def mainGUI():
     lblEncode.pack(side = LEFT)
 
     # Encode Images Attributes & positioning + Image Button definitions
-    for i in range(normalImages):
-        enc["image{0}".format(i+1)] = [PhotoImage(file=r"image"+str(i+1)+".png", width=250,
-                                                  height=140), "image{0}{1}".format(i+1, ".png")]
+    filelist = os.listdir('C:/Users/benja/Desktop/DataSecurityProject/DataSecurityMiniProject/venv/normalImages')
+    for fichier in filelist[:]:  # filelist[:] makes a copy of filelist.
+        if not (fichier.endswith(".png")):
+            filelist.remove(fichier)
+
+    for i in range(len(filelist)):
+        ima = PIL.Image.open(filelist[i])
+        enc["image{0}".format(i+1)] = [PhotoImage(file=filelist[i], width=250, height=140), filelist[i]]
         Button(paneEncImages, image=enc["image"+str(i+1)][0],
                 command= lambda i=i: beforeEncodeGuiMethod(enc["image"+str(i+1)][1])).pack(side = LEFT)
 
-
     # Decode Attributes & positioning
-    # for i in range(encImages):
-    #     enc2["out".format(i+1)] = [PhotoImage(file=r"image"+str(i+1)+".png", width=250,
-    #                                               height=140), "image{0}{1}".format(i+1, ".png")]
-    #     Button(paneEncImages, image=enc["image"+str(i+1)][0],
-    #             command= lambda i=i: beforeEncodeGuiMethod(enc["image"+str(i+1)][1])).pack(side = LEFT)
+    filelistDecrypted = os.listdir('C:/Users/benja/Desktop/DataSecurityProject/DataSecurityMiniProject/venv/decryptedImages')
+    for fichier in filelistDecrypted[:]:  # filelist[:] makes a copy of filelist.
+        if not (fichier.endswith("out.png")):
+            filelistDecrypted.remove(fichier)
+
+    for i in range(len(filelistDecrypted)):
+        ima = PIL.Image.open(filelistDecrypted[i])
+        dec["out{0}".format(i+1)] = [PhotoImage(file=filelistDecrypted[i], width=250, height=140), filelistDecrypted[i]]
+        Button(paneDecImages, image=dec["out"+str(i+1)][0],
+                command= lambda i=i: beforeEncodeGuiMethod(dec["out"+str(i+1)][1])).pack(side = LEFT)
 
     lblDecode = Label(paneDecrypt, text="Choose a photo to decrypt", font='Helvetica 12')
     lblDecode.pack(side = LEFT)
@@ -93,6 +103,8 @@ def mainGUI():
     paneData.pack(fill = X)
     paneSave.pack(fill = X)
     paneDecrypt.pack(fill = X, pady = 3)
+    paneDecImages.pack(fill = X)
+
 
     mainloop()
 
