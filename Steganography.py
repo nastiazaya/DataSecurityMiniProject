@@ -1,38 +1,32 @@
-# Python program implementing Image Steganography 
+import PIL.Image
+from PIL import ImageTk # pip install Pillow
+from tkinter import *
+import os
+from GUI import *
 
-# PIL module is used to extract 
-# pixels of image and modify it 
-from PIL import Image
-
-
-# Convert encoding data into 8-bit binary
-# form using ASCII value of characters 
-def genData(data):
-    # list of binary codes
-    # of given data
+def convertDataToBinary(data):
     newd = []
-
     for i in data:
+        # convert encoding data into 8-bit binary
         newd.append(format(ord(i), '08b'))
     return newd
 
-
 # Pixels are modified according to the
-# 8-bit binary data and finally returned 
+# 8-bit binary data and finally returned
 def modPix(pix, data):
-    datalist = genData(data)
+    datalist = convertDataToBinary(data)
     lendata = len(datalist)
     imdata = iter(pix)
 
     for i in range(lendata):
 
-        # Extracting 3 pixels at a time 
+        # Extracting 3 pixels at a time
         pix = [value for value in imdata.__next__()[:3] +
                imdata.__next__()[:3] +
                imdata.__next__()[:3]]
 
-        # Pixel value should be made  
-        # odd for 1 and even for 0 
+        # Pixel value should be made
+        # odd for 1 and even for 0
         for j in range(0, 8):
             if (datalist[i][j] == '0') and (pix[j] % 2 != 0):
 
@@ -42,10 +36,10 @@ def modPix(pix, data):
             elif (datalist[i][j] == '1') and (pix[j] % 2 == 0):
                 pix[j] -= 1
 
-        # Eigh^th pixel of every set tells  
-        # whether to stop ot read further. 
-        # 0 means keep reading; 1 means the 
-        # message is over. 
+        # Eigh^th pixel of every set tells
+        # whether to stop ot read further.
+        # 0 means keep reading; 1 means the
+        # message is over.
         if (i == lendata - 1):
             if (pix[-1] % 2 == 0):
                 pix[-1] -= 1
@@ -65,7 +59,7 @@ def encode_enc(newimg, data):
 
     for pixel in modPix(newimg.getdata(), data):
 
-        # Putting modified pixels in the new image 
+        # Putting modified pixels in the new image
         newimg.putpixel((x, y), pixel)
         if (x == w - 1):
             x = 0
@@ -73,27 +67,19 @@ def encode_enc(newimg, data):
         else:
             x += 1
 
-
-# Encode data into image
-def encode():
-    img = input("Enter image name(with extension): ")
-    image = Image.open(img, 'r')
-
-    data = input("Enter data to be encoded : ")
-    if (len(data) == 0):
-        raise ValueError('Data is empty')
-
-    newimg = image.copy()
-    encode_enc(newimg, data)
-
-    new_img_name = input("Enter the name of new image(with extension): ")
-    newimg.save(new_img_name, str(new_img_name.split(".")[1].upper()))
+# still need fixings
+def encodeGuiMethod(imageNameToEncode, textToEnconde, outPutImageName):
+    copyImage = PIL.Image.open(imageNameToEncode, 'r').copy()
+    encode_enc(copyImage, textToEnconde)
+    finalName = "out-"+outPutImageName+".png"
+    path = "C:/Users/benja/Desktop/"
+    copyImage.save(path+finalName, str(finalName.split(".")[1].upper()))
 
 
-# Decode the data in the image
-def decode():
-    img = input("Enter image name(with extension) :")
-    image = Image.open(img, 'r')
+# still need fixings
+def decodeGuiMethod(imageNameToDecode):
+    # img = input("Enter image name(with extension): ")
+    image = PIL.Image.open(imageNameToDecode, 'r')
 
     data = ''
     imgdata = iter(image.getdata())
@@ -102,7 +88,7 @@ def decode():
         pixels = [value for value in imgdata.__next__()[:3] +
                   imgdata.__next__()[:3] +
                   imgdata.__next__()[:3]]
-        # string of binary data 
+        # string of binary data
         binstr = ''
 
         for i in pixels[:8]:
@@ -115,23 +101,51 @@ def decode():
         if (pixels[-1] % 2 != 0):
             return data
 
-        # Main Function
+# def mainGUI():
+#     ## Initialize
+#     window = Tk()
+#     window.title("Welcome to KGB Decryption system")
+#     window.geometry('500x200')
+#
+#     # must be here before decleration of the labels
+#     def retrieveTextInputFromEncodeLabel(textLabele):
+#         imageNameE = textLabele.get()
+#         encodeGuiMethod(imageNameE)
+#
+#     ## must be here before decleration of the labels
+#     def retrieveTextInputFromDecodeLabel(textLabeld):
+#         imageNameD = textLabeld.get()
+#         print(decodeGuiMethod(imageNameD))
+#
+#     # Encode Attributes & positioning
+#     lblEncode = Label(window)
+#     lblEncode.configure(text="Enter Image name to encode")
+#     lblEncode.grid(column=1, row=0)
+#     txtEncode = Entry(window, width=30)
+#     txtEncode.grid(column=2, row=0)
+#     buttonCommit = Button(window, text="Encode Image", command=lambda: retrieveTextInputFromEncodeLabel(txtEncode))
+#     buttonCommit.grid(column=3, row=0)
+#
+#     # Decode Attributes & positioning
+#     lblDecode = Label(window)
+#     lblDecode.configure(text="Enter Image name to decode")
+#     lblDecode.grid(column=1, row=1)
+#     txtDecode = Entry(window, width=30)
+#     txtDecode.grid(column=2, row=1)
+#     buttonCommit = Button(window, text="Decode Image", command=lambda: retrieveTextInputFromDecodeLabel(txtDecode))
+#     buttonCommit.grid(column=3, row=1)
+#
+#     window.mainloop() # DONT TOUCH OR REMOVE THAT LINE, this is the last line of the GUI
 
+# if __name__ == '__main__':
+#
+#     mainGUI()
 
-def main():
-    a = int(input(":: Welcome to Steganography ::\n"
-                  "1. Encode\n 2. Decode\n"))
-    if (a == 1):
-        encode()
-
-    elif (a == 2):
-        print("Decoded word- " + decode())
-    else:
-        raise Exception("Enter correct input")
-
-    # Driver Code
-
-
-if __name__ == '__main__':
-    # Calling main function
-    main() 
+# Encode:
+#     'H' is 72 is 01001000.
+#                 (red, green, blue)
+#     original:   (27, 64, 164), (248, 244, 194), (174, 246, 250)
+#     new:        (26, 63, 164), (248, 243, 194), (174, 246, 250)
+#
+# Decode:
+#     same until the last value is odd
