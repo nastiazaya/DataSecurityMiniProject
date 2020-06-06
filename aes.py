@@ -4,6 +4,7 @@ import hashlib
 from Cryptodome.Cipher import AES
 import os
 from Cryptodome.Random import get_random_bytes
+from GUI import *
 
 
 def encrypt(plain_text, password):
@@ -50,19 +51,19 @@ def decrypt(enc_dict, password):
         raise
 
 
-def main():
-    password = input("Password: ")
+# def main():
+#     password = input("Password: ")
+#
+#     # First let us encrypt secret message
+#     encrypted = encrypt("The secretest message here", password)
+#     print(encrypted)
+#
+#     # Let us decrypt using our original password
+#     try:
+#         decrypted = decrypt(encrypted,password)
+#         print(bytes.decode(decrypted))
+#     except ValueError:
+#         print('error')
 
-    # First let us encrypt secret message
-    encrypted = encrypt("The secretest message here", password)
-    print(encrypted)
 
-    # Let us decrypt using our original password
-    try:
-        decrypted = decrypt(encrypted,password)
-        print(bytes.decode(decrypted))
-    except ValueError:
-        print('error')
-
-
-main()
+# main()

@@ -3,7 +3,7 @@ from tkinter.ttk import *
 from PIL import Image
 import os
 from Steganography import *
-
+from aes import *
 
 def mainGUI():
     normalImages, encImages = 4, 0
@@ -38,9 +38,13 @@ def mainGUI():
         nameText.pack(side=LEFT)
 
         Button(paneSave, width=15, text="Encode",
-                              command=lambda: encodeGuiMethod(imageNameToEncode,
-                                                              dataText.get(),
+                              command=lambda: encodeGuiMethod(imageNameToEncode,encrypt(
+                                                              dataText.get(), 123),
                                                               nameText.get())).pack(side=LEFT, fill=X, padx=5)
+        # Button(paneSave, width=15, text="Encode",
+        #                       command=lambda: encodeGuiMethod(imageNameToEncode,
+        #                                                       dataText.get(),
+        #                                                       nameText.get())).pack(side=LEFT, fill=X, padx=5)
 
     paneLogo = Frame(window)
     panePassword = Frame(window)
