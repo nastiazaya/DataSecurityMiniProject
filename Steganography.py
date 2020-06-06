@@ -72,8 +72,8 @@ def encodeGuiMethod(imageNameToEncode, textToEnconde, outPutImageName):
     copyImage = PIL.Image.open(imageNameToEncode, 'r').copy()
     encode_enc(copyImage, textToEnconde)
     finalName = outPutImageName+"-out.png"
-    path1 = "C:/Users/benja/Desktop/DataSecurityProject/DataSecurityMiniProject/venv/decryptedImages"
-    path2 = "C:/Users/benja/Desktop/DataSecurityProject/DataSecurityMiniProject/venv"
+    path1 = "C:/Users/benja/Desktop/DataSecurity/decryptedImages/"
+    path2 = "C:/Users/benja/Desktop/DataSecurity/"
     copyImage.save(path1+finalName, str(finalName.split(".")[1].upper()))
     copyImage.save(path2+finalName, str(finalName.split(".")[1].upper()))
 

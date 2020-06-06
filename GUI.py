@@ -19,6 +19,25 @@ def mainGUI():
     positionDown = int(window.winfo_screenheight() / 2 - winHeight * 2.04)
     window.geometry("+{}+{}".format(positionRight, positionDown))
 
+    def decodeUpdate(imageNameToEncode, txt, password):
+        # Decode Attributes & positioning
+        for f in paneDecImages.winfo_children():
+            f.destroy()
+
+        filelistDecrypted = os.listdir('C:/Users/benja/Desktop/DataSecurity/decryptedImages/')
+        for fichier in filelistDecrypted[:]:
+            if not (fichier.endswith("out.png")):
+                filelistDecrypted.remove(fichier)
+
+        for i in range(len(filelistDecrypted)):
+            ima = PIL.Image.open(filelistDecrypted[i])
+            dec["out{0}".format(i + 1)] = [PhotoImage(file=filelistDecrypted[i], width=250, height=140),
+                                           filelistDecrypted[i]]
+            Button(paneDecImages, image=dec["out" + str(i + 1)][0],
+                   command=lambda i=i: beforeEncodeGuiMethod(dec["out" + str(i + 1)][1])).pack(side=LEFT)
+
+        encodeGuiMethod(imageNameToEncode, txt, password)
+
     def beforeEncodeGuiMethod(imageNameToEncode):
         # Data to encrypt
         # destroy previous from frame
@@ -38,13 +57,9 @@ def mainGUI():
         nameText.pack(side=LEFT)
 
         Button(paneSave, width=15, text="Encode",
-                              command=lambda: encodeGuiMethod(imageNameToEncode,encrypt(
-                                                              dataText.get(), 'abcd'),
-                                                              nameText.get())).pack(side=LEFT, fill=X, padx=5)
-        # Button(paneSave, width=15, text="Encode",
-        #                       command=lambda: encodeGuiMethod(imageNameToEncode,
-        #                                                       dataText.get(),
-        #                                                       nameText.get())).pack(side=LEFT, fill=X, padx=5)
+                              command=lambda: decodeUpdate(imageNameToEncode,encrypt(dataText.get(), 'abcd'), nameText.get()))\
+                                                .pack(side=LEFT, fill=X, padx=5)
+
 
     paneLogo = Frame(window)
     panePassword = Frame(window)
@@ -70,7 +85,7 @@ def mainGUI():
     lblEncode.pack(side = LEFT)
 
     # Encode Images Attributes & positioning + Image Button definitions
-    filelist = os.listdir('C:/Users/benja/Desktop/DataSecurityProject/DataSecurityMiniProject/venv/normalImages')
+    filelist = os.listdir('C:/Users/benja/Desktop/DataSecurity/normalImages/')
     for fichier in filelist[:]:  # filelist[:] makes a copy of filelist.
         if not (fichier.endswith(".png")):
             filelist.remove(fichier)
@@ -82,16 +97,17 @@ def mainGUI():
                 command= lambda i=i: beforeEncodeGuiMethod(enc["image"+str(i+1)][1])).pack(side = LEFT)
 
     # Decode Attributes & positioning
-    filelistDecrypted = os.listdir('C:/Users/benja/Desktop/DataSecurityProject/DataSecurityMiniProject/venv/decryptedImages')
-    for fichier in filelistDecrypted[:]:  # filelist[:] makes a copy of filelist.
-        if not (fichier.endswith("out.png")):
-            filelistDecrypted.remove(fichier)
-
-    for i in range(len(filelistDecrypted)):
-        ima = PIL.Image.open(filelistDecrypted[i])
-        dec["out{0}".format(i+1)] = [PhotoImage(file=filelistDecrypted[i], width=250, height=140), filelistDecrypted[i]]
-        Button(paneDecImages, image=dec["out"+str(i+1)][0],
-                command= lambda i=i: beforeEncodeGuiMethod(dec["out"+str(i+1)][1])).pack(side = LEFT)
+    # filelistDecrypted = os.listdir('C:/Users/benja/Desktop/DataSecurity/decryptedImages/')
+    # for fichier in filelistDecrypted[:]:  # filelist[:] makes a copy of filelist.
+    #     if not (fichier.endswith("out.png")):
+    #         filelistDecrypted.remove(fichier)
+    #
+    # for i in range(len(filelistDecrypted)):
+    #     ima = PIL.Image.open(filelistDecrypted[i])
+    #     dec["out{0}".format(i + 1)] = [PhotoImage(file=filelistDecrypted[i], width=250, height=140),
+    #                                    filelistDecrypted[i]]
+    #     Button(paneDecImages, image=dec["out" + str(i + 1)][0],
+    #            command=lambda i=i: beforeEncodeGuiMethod(dec["out" + str(i + 1)][1])).pack(side=LEFT)
 
     lblDecode = Label(paneDecrypt, text="Choose a photo to decrypt", font='Helvetica 12')
     lblDecode.pack(side = LEFT)
