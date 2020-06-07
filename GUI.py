@@ -6,7 +6,6 @@ from Steganography import *
 from aes import *
 
 def mainGUI():
-    normalImages, encImages = 4, 0
     enc={}
     dec={}
     window = Tk()
@@ -20,6 +19,8 @@ def mainGUI():
     window.geometry("+{}+{}".format(positionRight, positionDown))
 
     def decodeUpdate(imageNameToEncode, txt, password):
+        encodeGuiMethod(imageNameToEncode, txt, password)
+
         # Decode Attributes & positioning
         for f in paneDecImages.winfo_children():
             f.destroy()
@@ -36,7 +37,6 @@ def mainGUI():
             Button(paneDecImages, image=dec["out" + str(i + 1)][0],
                    command=lambda i=i: beforeEncodeGuiMethod(dec["out" + str(i + 1)][1])).pack(side=LEFT)
 
-        encodeGuiMethod(imageNameToEncode, txt, password)
 
     def beforeEncodeGuiMethod(imageNameToEncode):
         # Data to encrypt
@@ -97,17 +97,17 @@ def mainGUI():
                 command= lambda i=i: beforeEncodeGuiMethod(enc["image"+str(i+1)][1])).pack(side = LEFT)
 
     # Decode Attributes & positioning
-    # filelistDecrypted = os.listdir('C:/Users/benja/Desktop/DataSecurity/decryptedImages/')
-    # for fichier in filelistDecrypted[:]:  # filelist[:] makes a copy of filelist.
-    #     if not (fichier.endswith("out.png")):
-    #         filelistDecrypted.remove(fichier)
-    #
-    # for i in range(len(filelistDecrypted)):
-    #     ima = PIL.Image.open(filelistDecrypted[i])
-    #     dec["out{0}".format(i + 1)] = [PhotoImage(file=filelistDecrypted[i], width=250, height=140),
-    #                                    filelistDecrypted[i]]
-    #     Button(paneDecImages, image=dec["out" + str(i + 1)][0],
-    #            command=lambda i=i: beforeEncodeGuiMethod(dec["out" + str(i + 1)][1])).pack(side=LEFT)
+    filelistDecrypted = os.listdir('C:/Users/benja/Desktop/DataSecurity/decryptedImages/')
+    for fichier in filelistDecrypted[:]:  # filelist[:] makes a copy of filelist.
+        if not (fichier.endswith("out.png")):
+            filelistDecrypted.remove(fichier)
+
+    for i in range(len(filelistDecrypted)):
+        ima = PIL.Image.open(filelistDecrypted[i])
+        dec["out{0}".format(i + 1)] = [PhotoImage(file=filelistDecrypted[i], width=250, height=140),
+                                       filelistDecrypted[i]]
+        Button(paneDecImages, image=dec["out" + str(i + 1)][0],
+               command=lambda i=i: beforeEncodeGuiMethod(dec["out" + str(i + 1)][1])).pack(side=LEFT)
 
     lblDecode = Label(paneDecrypt, text="Choose a photo to decrypt", font='Helvetica 12')
     lblDecode.pack(side = LEFT)
