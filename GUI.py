@@ -69,6 +69,7 @@ def mainGUI():
     paneSave = Frame(window)
     paneDecrypt = Frame(window)
     paneDecImages = Frame(window)
+    paneDecData = Frame(window)
 
     logo = PhotoImage(file=r"logo-removebg-preview.png", width=187, height=60)
     Label(paneLogo, image=logo).pack()
@@ -91,7 +92,7 @@ def mainGUI():
             filelist.remove(fichier)
 
     for i in range(len(filelist)):
-        ima = PIL.Image.open(filelist[i])
+        # ima = PIL.Image.open(filelist[i])
         enc["image{0}".format(i+1)] = [PhotoImage(file=filelist[i], width=250, height=140), filelist[i]]
         Button(paneEncImages, image=enc["image"+str(i+1)][0],
                 command= lambda i=i: beforeEncodeGuiMethod(enc["image"+str(i+1)][1])).pack(side = LEFT)
@@ -103,13 +104,16 @@ def mainGUI():
             filelistDecrypted.remove(fichier)
 
     for i in range(len(filelistDecrypted)):
-        ima = PIL.Image.open(filelistDecrypted[i])
+        # ima = PIL.Image.open(filelistDecrypted[i])
         dec["out{0}".format(i + 1)] = [PhotoImage(file=filelistDecrypted[i], width=250, height=140),
                                        filelistDecrypted[i]]
-        Button(paneDecImages, image=dec["out" + str(i + 1)][0],
-               command=lambda i=i: beforeEncodeGuiMethod(dec["out" + str(i + 1)][1])).pack(side=LEFT)
+        Button(paneDecImages, image=dec["out" + str(i + 1)][0]).pack(side=LEFT)
 
     lblDecode = Label(paneDecrypt, text="Choose a photo to decrypt", font='Helvetica 12')
+    lblDecode.pack(side = LEFT)
+
+    # Encode Attributes & positioning
+    lblDecode = Label(paneDecData, text="Informatoion Decrypted", font='Helvetica 12')
     lblDecode.pack(side = LEFT)
 
     paneLogo.pack(fill = BOTH)
@@ -120,6 +124,7 @@ def mainGUI():
     paneSave.pack(fill = X)
     paneDecrypt.pack(fill = X, pady = 3)
     paneDecImages.pack(fill = X)
+    paneDecData.pack(fill = X, pady = 3)
 
 
     mainloop()
