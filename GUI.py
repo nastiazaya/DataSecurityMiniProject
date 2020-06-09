@@ -61,6 +61,23 @@ def mainGUI():
                                                 .pack(side=LEFT, fill=X, padx=5)
 
 
+    def displayDecryptedData():
+        lblDecode = Label(paneDecData, text="Informatoion Decrypted - NOT FINISHED YET", font='Helvetica 12')
+        lblDecode.pack(side=LEFT)
+
+    def beforeDecodeGuiMethod():
+        for f in panePassDec.winfo_children():
+            f.destroy()
+
+        passLabel = Label(panePassDec, text="Enter Password", font='Helvetica 10')
+        passLabel.pack(side=LEFT)
+        passText = Entry(panePassDec, width=30)
+        passText.config(show="*")
+        passText.pack(side=LEFT)
+
+        Button(panePassDec, width=15, text="Enter",
+                              command=lambda: displayDecryptedData()).pack(side=LEFT, fill=X, padx=5)
+
     paneLogo = Frame(window)
     panePassword = Frame(window)
     paneEncrypt = Frame(window)
@@ -69,6 +86,7 @@ def mainGUI():
     paneSave = Frame(window)
     paneDecrypt = Frame(window)
     paneDecImages = Frame(window)
+    panePassDec = Frame(window)
     paneDecData = Frame(window)
 
     logo = PhotoImage(file=r"logo-removebg-preview.png", width=187, height=60)
@@ -107,14 +125,12 @@ def mainGUI():
         # ima = PIL.Image.open(filelistDecrypted[i])
         dec["out{0}".format(i + 1)] = [PhotoImage(file=filelistDecrypted[i], width=250, height=140),
                                        filelistDecrypted[i]]
-        Button(paneDecImages, image=dec["out" + str(i + 1)][0]).pack(side=LEFT)
+        Button(paneDecImages, image=dec["out" + str(i + 1)][0],
+               command=lambda i=i: beforeDecodeGuiMethod()).pack(side=LEFT)
 
     lblDecode = Label(paneDecrypt, text="Choose a photo to decrypt", font='Helvetica 12')
     lblDecode.pack(side = LEFT)
 
-    # Encode Attributes & positioning
-    lblDecode = Label(paneDecData, text="Informatoion Decrypted", font='Helvetica 12')
-    lblDecode.pack(side = LEFT)
 
     paneLogo.pack(fill = BOTH)
     panePassword.pack()
@@ -124,6 +140,7 @@ def mainGUI():
     paneSave.pack(fill = X)
     paneDecrypt.pack(fill = X, pady = 3)
     paneDecImages.pack(fill = X)
+    panePassDec.pack(fill = X, pady = 3)
     paneDecData.pack(fill = X, pady = 3)
 
 
