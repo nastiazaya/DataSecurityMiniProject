@@ -56,15 +56,14 @@ def encodeImageMainMethod(newimg, data):
             x += 1
 
 # still need fixings
-def encodeGuiMethod(imageNameToEncode, textToEnconde, outPutImageName):
+def encodeGuiMethod(imageNameToEncode, textToEnconde, outPutImageName, path):
     copyImage = PIL.Image.open(imageNameToEncode, 'r').copy()
     encodeImageMainMethod(copyImage, textToEnconde)
     finalName = outPutImageName+"-out.png"
-    path1 = "C:/Users/benja/Desktop/DataSecurity/decryptedImages/"
-    path2 = "C:/Users/benja/Desktop/DataSecurity/"
+    path1 = path + "decryptedImages/"
+    path2 = path
     copyImage.save(path1+finalName, str(finalName.split(".")[1].upper()))
     copyImage.save(path2+finalName, str(finalName.split(".")[1].upper()))
-
 
 # still need fixings
 def decodeGuiMethod(imageNameToDecode):

@@ -4,10 +4,14 @@ from PIL import Image
 import os
 from Steganography import *
 from aes import *
+from tkinter import filedialog
+
+path = ''
 
 def mainGUI():
     enc={}
     dec={}
+
     window = Tk()
     window.title("CryptoPal")
     window.resizable(False, False)
@@ -18,20 +22,22 @@ def mainGUI():
     positionDown = int(window.winfo_screenheight() / 2 - winHeight * 2.04)
     window.geometry("+{}+{}".format(positionRight, positionDown))
 
+    def getPath():
+        path = filedialog.askdirectory()
+
     def decodeUpdate(imageNameToEncode, txt, password):
-        encodeGuiMethod(imageNameToEncode, txt, password)
+        encodeGuiMethod(imageNameToEncode, txt, password, path)
 
         # Decode Attributes & positioning
         for f in paneDecImages.winfo_children():
             f.destroy()
 
-        filelistDecrypted = os.listdir('C:/Users/benja/Desktop/DataSecurity/decryptedImages/')
+        filelistDecrypted = os.listdir(path + 'decryptedImages/')
         for fichier in filelistDecrypted[:]:
             if not (fichier.endswith("out.png")):
                 filelistDecrypted.remove(fichier)
 
         for i in range(len(filelistDecrypted)):
-            ima = PIL.Image.open(filelistDecrypted[i])
             dec["out{0}".format(i + 1)] = [PhotoImage(file=filelistDecrypted[i], width=250, height=140),
                                            filelistDecrypted[i]]
             Button(paneDecImages, image=dec["out" + str(i + 1)][0],
@@ -44,39 +50,53 @@ def mainGUI():
         for f in paneData.winfo_children():
             f.destroy()
 
-        dataLabel = Label(paneData, text="Enter data to encrypt", font='Helvetica 10')
+        dataLabel = Label(paneData, text="Enter Data to Encrypt", font='Helvetica 10')
         dataLabel.pack(side=LEFT)
         dataText = Entry(paneData, width=66)
         dataText.pack(side=LEFT)
 
+        for f in panePassword.winfo_children():
+            f.destroy()
+
+        # Password Attributes & positioning
+        nameLabel = Label(panePassword, text="Enter UNIQUE Password", font='Helvetica 10')
+        nameLabel.pack(side=LEFT)
+        txtPass = Entry(panePassword, width=30)
+        txtPass.config(show="*")
+        txtPass.pack(side=LEFT)
+
         for f in paneSave.winfo_children():
             f.destroy()
-        nameLabel = Label(paneSave, text="Enter new image name with extension", font='Helvetica 10')
+        nameLabel = Label(paneSave, text="Enter New Image Name", font='Helvetica 10')
         nameLabel.pack(side=LEFT)
         nameText = Entry(paneSave, width=30)
         nameText.pack(side=LEFT)
 
-        Button(paneSave, width=15, text="Encode",
-                              command=lambda: decodeUpdate(imageNameToEncode,encrypt(dataText.get(), 'abcd'), nameText.get()))\
-                                                .pack(side=LEFT, fill=X, padx=5)
+        for f in paneFinish.winfo_children():
+            f.destroy()
+
+        Button(paneFinish, width=15, text="Finish & Encode!",
+                              command=lambda: decodeUpdate(imageNameToEncode, encrypt(dataText.get(), txtPass.get()),
+                                                           nameText.get())).pack(side=LEFT, fill=X, padx=5)
 
 
-    def displayDecryptedData():
-        lblDecode = Label(paneDecData, text="Informatoion Decrypted - NOT FINISHED YET", font='Helvetica 12')
+    def displayDecryptedData(imagePassword, imageName):
+        lblDecode = Label(paneDecData, text=decrypt(decodeGuiMethod(imageName), imagePassword), font='Helvetica 12')
         lblDecode.pack(side=LEFT)
 
-    def beforeDecodeGuiMethod():
+
+    def beforeDecodeGuiMethod(imageName):
         for f in panePassDec.winfo_children():
             f.destroy()
 
-        passLabel = Label(panePassDec, text="Enter Password", font='Helvetica 10')
+        passLabel = Label(panePassDec, text="Enter Your UNIQUE Password", font='Helvetica 10')
         passLabel.pack(side=LEFT)
         passText = Entry(panePassDec, width=30)
         passText.config(show="*")
         passText.pack(side=LEFT)
 
-        Button(panePassDec, width=15, text="Enter",
-                              command=lambda: displayDecryptedData()).pack(side=LEFT, fill=X, padx=5)
+        Button(panePassDec, width=15, text="Enter & Decrypt!",
+                              command=lambda: displayDecryptedData(passText.get(), imageName)).pack(side=LEFT, fill=X, padx=5)
 
     paneLogo = Frame(window)
     panePassword = Frame(window)
@@ -84,20 +104,14 @@ def mainGUI():
     paneEncImages = Frame(window)
     paneData = Frame(window)
     paneSave = Frame(window)
+    paneFinish = Frame(window)
     paneDecrypt = Frame(window)
     paneDecImages = Frame(window)
     panePassDec = Frame(window)
     paneDecData = Frame(window)
 
     logo = PhotoImage(file=r"logo-removebg-preview.png", width=187, height=60)
-    Label(paneLogo, image=logo).pack()
-
-    # Password Attributes & positioning
-    txtDecode = Entry(panePassword, width=30)
-    txtDecode.config(show="*")
-    txtDecode.pack(side=LEFT)
-    buttonCommit = Button(panePassword, width=15, text="Enter Password")
-    buttonCommit.pack(side=LEFT, fill = X, padx = 5)
+    Button(paneLogo, image=logo, command = lambda: getPath()).pack()
 
     # Encode Attributes & positioning
     lblEncode = Label(paneEncrypt, text="Choose a photo to encrypt", font='Helvetica 12')
@@ -122,22 +136,22 @@ def mainGUI():
             filelistDecrypted.remove(fichier)
 
     for i in range(len(filelistDecrypted)):
-        # ima = PIL.Image.open(filelistDecrypted[i])
         dec["out{0}".format(i + 1)] = [PhotoImage(file=filelistDecrypted[i], width=250, height=140),
                                        filelistDecrypted[i]]
         Button(paneDecImages, image=dec["out" + str(i + 1)][0],
-               command=lambda i=i: beforeDecodeGuiMethod()).pack(side=LEFT)
+               command=lambda i=i: beforeDecodeGuiMethod(dec["out" + str(i + 1)][1])).pack(side=LEFT)
 
     lblDecode = Label(paneDecrypt, text="Choose a photo to decrypt", font='Helvetica 12')
     lblDecode.pack(side = LEFT)
 
 
     paneLogo.pack(fill = BOTH)
-    panePassword.pack()
     paneEncrypt.pack(fill = X, pady = 3)
     paneEncImages.pack(fill = X)
     paneData.pack(fill = X)
+    panePassword.pack(fill = X)
     paneSave.pack(fill = X)
+    paneFinish.pack(fill = X)
     paneDecrypt.pack(fill = X, pady = 3)
     paneDecImages.pack(fill = X)
     panePassDec.pack(fill = X, pady = 3)
