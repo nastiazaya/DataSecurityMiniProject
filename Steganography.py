@@ -4,33 +4,40 @@ from tkinter import *
 import os
 from GUI import *
 
-def convertDataToBinary(data):
-    newd = []
-    for i in data:
-        newd.append(format(ord(i), '08b'))
-    return newd
+binaryData = []
 
-def modPix(imagePixels, data):
-    datalist = convertDataToBinary(data)
-    lendata = len(datalist)
-    imdata = iter(imagePixels)
+def encodeImageMainMethod(copy, encodeData):
+    width = copy.size[0]
+    (x, y) = (0, 0)
 
-    for i in range(lendata):
+    for p in modifyImage(copy.getdata(), encodeData):
+        copy.putpixel((x, y), p)
+        if (x == width - 1):
+            y = y+1
+            x = 0
+        else:
+            x = x+1
 
-        imagePixels = [value for value in imdata.__next__()[:3] +
-               imdata.__next__()[:3] +
-               imdata.__next__()[:3]]
+def convertDataToBinary(nonBinaryData):
+    for index in nonBinaryData:
+        binaryData.append(format(ord(index), '08b'))
+    return binaryData
+
+def modifyImage(imagePixels, data):
+    listofdata = convertDataToBinary(data)
+    dataimage = iter(imagePixels)
+
+    for i in range(len(listofdata)):
+        imagePixels = [value for value in dataimage.__next__()[:3] + dataimage.__next__()[:3] + dataimage.__next__()[:3]]
 
         for j in range(0, 8):
-            if (datalist[i][j] == '0') and (imagePixels[j] % 2 != 0):
-
+            if (listofdata[i][j] == '0') and (imagePixels[j] % 2 != 0):
                 if (imagePixels[j] % 2 != 0):
                     imagePixels[j] -= 1
-
-            elif (datalist[i][j] == '1') and (imagePixels[j] % 2 == 0):
+            elif (listofdata[i][j] == '1') and (imagePixels[j] % 2 == 0):
                 imagePixels[j] -= 1
 
-        if (i == lendata - 1):
+        if (i == len(listofdata) - 1):
             if (imagePixels[-1] % 2 == 0):
                 imagePixels[-1] -= 1
         else:
@@ -42,30 +49,6 @@ def modPix(imagePixels, data):
         yield imagePixels[3:6]
         yield imagePixels[6:9]
 
-
-def encodeImageMainMethod(newimg, data):
-    w = newimg.size[0]
-    (x, y) = (0, 0)
-
-    for pixel in modPix(newimg.getdata(), data):
-        newimg.putpixel((x, y), pixel)
-        if (x == w - 1):
-            x = 0
-            y += 1
-        else:
-            x += 1
-
-# still need fixings
-def encodeGuiMethod(imageNameToEncode, textToEnconde, outPutImageName, path):
-    copyImage = PIL.Image.open(imageNameToEncode, 'r').copy()
-    encodeImageMainMethod(copyImage, textToEnconde)
-    finalName = outPutImageName+"-out.png"
-    path1 = path + "decryptedImages/"
-    path2 = path
-    copyImage.save(path1+finalName, str(finalName.split(".")[1].upper()))
-    copyImage.save(path2+finalName, str(finalName.split(".")[1].upper()))
-
-# still need fixings
 def decodeGuiMethod(imageNameToDecode):
     image = PIL.Image.open(imageNameToDecode, 'r')
     data = ''
@@ -75,14 +58,23 @@ def decodeGuiMethod(imageNameToDecode):
         pixels = [value for value in imgdata.__next__()[:3] +
                   imgdata.__next__()[:3] +
                   imgdata.__next__()[:3]]
-        binstr = ''
+        string = ''
 
         for i in pixels[:8]:
-            if (i % 2 == 0):
-                binstr += '0'
+            if (i % 2 != 0):
+                string += '1'
             else:
-                binstr += '1'
+                string += '0'
 
-        data += chr(int(binstr, 2))
+        data = data+chr(int(string, 2))
         if (pixels[-1] % 2 != 0):
             return data
+
+def encodeGuiMethod(imageNameToEncode, textToEnconde, outPutImageName, path):
+    copyImage = PIL.Image.open(imageNameToEncode, 'r').copy()
+    encodeImageMainMethod(copyImage, textToEnconde)
+    finalName = outPutImageName+"-out.png"
+    path1 = path + "decryptedImages/"
+    path2 = path
+    copyImage.save(path1+finalName, str(finalName.split(".")[1].upper()))
+    copyImage.save(path2+finalName, str(finalName.split(".")[1].upper()))
