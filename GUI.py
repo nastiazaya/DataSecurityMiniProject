@@ -15,7 +15,7 @@ def mainGUI():
     window = Tk()
     window.title("CryptoPal")
     window.resizable(False, False)
-    window.geometry('1400x700')
+    window.geometry('1280x700')
     winWidth = window.winfo_reqwidth()
     winHeight = window.winfo_reqheight()
     positionRight = int(window.winfo_screenwidth() / 2 - winWidth * 3.75)
@@ -25,9 +25,7 @@ def mainGUI():
     def getPath():
         path = filedialog.askdirectory()
 
-    def decodeUpdate(imageNameToEncode, txt, password):
-        encodeGuiMethod(imageNameToEncode, txt, password, path)
-
+    def updatePaneDecImages():
         # Decode Attributes & positioning
         for f in paneDecImages.winfo_children():
             f.destroy()
@@ -41,8 +39,11 @@ def mainGUI():
             dec["out{0}".format(i + 1)] = [PhotoImage(file=filelistDecrypted[i], width=250, height=140),
                                            filelistDecrypted[i]]
             Button(paneDecImages, image=dec["out" + str(i + 1)][0],
-                   command=lambda i=i: beforeEncodeGuiMethod(dec["out" + str(i + 1)][1])).pack(side=LEFT)
+                   command=lambda i=i: beforeDecodeGuiMethod(dec["out" + str(i + 1)][1])).pack(side=LEFT)
 
+    def decodeUpdate(imageNameToEncode, txt, password):
+        encodeGuiMethod(imageNameToEncode, txt, password, path)
+        updatePaneDecImages()
 
     def beforeEncodeGuiMethod(imageNameToEncode):
         # Data to encrypt
@@ -78,12 +79,13 @@ def mainGUI():
         Button(paneFinish, width=15, text="Finish & Encode!",
                               command=lambda: decodeUpdate(imageNameToEncode, encrypt(dataText.get(), txtPass.get()),
                                                            nameText.get())).pack(side=LEFT, fill=X, padx=5)
-
+        updatePaneDecImages()
 
     def displayDecryptedData(imagePassword, imageName):
+        for f in paneDecData.winfo_children():
+            f.destroy()
         lblDecode = Label(paneDecData, text=decrypt(decodeGuiMethod(imageName), imagePassword), font='Helvetica 12')
         lblDecode.pack(side=LEFT)
-
 
     def beforeDecodeGuiMethod(imageName):
         for f in panePassDec.winfo_children():
@@ -118,7 +120,7 @@ def mainGUI():
     lblEncode.pack(side = LEFT)
 
     # Encode Images Attributes & positioning + Image Button definitions
-    filelist = os.listdir('C:/Users/benja/Desktop/DataSecurity/normalImages/')
+    filelist = os.listdir(path + 'normalImages/')
     for fichier in filelist[:]:  # filelist[:] makes a copy of filelist.
         if not (fichier.endswith(".png")):
             filelist.remove(fichier)
@@ -130,7 +132,7 @@ def mainGUI():
                 command= lambda i=i: beforeEncodeGuiMethod(enc["image"+str(i+1)][1])).pack(side = LEFT)
 
     # Decode Attributes & positioning
-    filelistDecrypted = os.listdir('C:/Users/benja/Desktop/DataSecurity/decryptedImages/')
+    filelistDecrypted = os.listdir(path + 'decryptedImages/')
     for fichier in filelistDecrypted[:]:  # filelist[:] makes a copy of filelist.
         if not (fichier.endswith("out.png")):
             filelistDecrypted.remove(fichier)

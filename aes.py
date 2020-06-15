@@ -27,7 +27,6 @@ def encrypt(plain_text, password):
         'tag': b64encode(tag).decode('utf-8')
     })
 
-
 def decrypt(enc_dict, password):
     res = ast.literal_eval(enc_dict)
     # decode the dictionary entries from base64
@@ -48,22 +47,5 @@ def decrypt(enc_dict, password):
         decrypted = cipher.decrypt_and_verify(cipher_text, tag)
         return decrypted
     except ValueError:
-        raise
-
-
-# def main():
-#     password = input("Password: ")
-#
-#     # First let us encrypt secret message
-#     encrypted = encrypt("The secretest message here", password)
-#     print(encrypted)
-#
-#     # Let us decrypt using our original password
-#     try:
-#         decrypted = decrypt(encrypted,password)
-#         print(bytes.decode(decrypted))
-#     except ValueError:
-#         print('error')
-
-
-# main()
+        # raise
+        return "Incorrect Password for this image!"
