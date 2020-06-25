@@ -1,6 +1,6 @@
 # CryptoPal
 
-![logo](logo-removebg-preview.png)
+![logo](src/logo-removebg-preview.png)
 
 ## General Info
 CryptoPal is a GUI application for hidding text in an image based on steganography and AES encryption.
